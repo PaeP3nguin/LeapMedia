@@ -6,7 +6,13 @@
         xmlns:local="clr-namespace:LeapMagic"
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
-    <Grid>
-        
-    </Grid>
+    <StackPanel>
+        <TextBlock x:Name="handInfo" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="TextBox"/>
+        <TextBlock x:Name="pinchStrength" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="TextBox"/>
+        <TextBlock x:Name="pinchDistance" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="TextBox"/>
+        <TextBlock x:Name="grabStrength" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="TextBox"/>
+        <TextBlock x:Name="confidence" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="TextBox"/>
+        <TextBlock x:Name="timeVisible" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="TextBox"/>
+        <TextBlock x:Name="palmPosition" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="TextBox"/>
+    </StackPanel>
 </Window>

@@ -9,6 +9,10 @@ namespace LeapMagic {
     /// </summary>
     public partial class MainWindow : Window {
 
+        private const float MIN_PINCH_DIST = 60;
+        private const float MAX_PINCH_STRENGTH = 0f;
+        private const int MIN_ACTION_DEBOUNCE = 1000 * 1000;
+
         private Controller controller = new Controller();
         private int currentHand;
         private long lastActionTime;
@@ -19,18 +23,35 @@ namespace LeapMagic {
             controller.FrameReady += frameHandler;
         }
 
+        public Hand CurrentHand { get; set; }
+
         void frameHandler(object sender, FrameEventArgs eventArgs) {
             Frame frame = eventArgs.frame;
-            if (frame.Hands.Count != 1) {
-                // Only watch for one-handed gestures
-                return;
-            }
-            Hand hand = frame.Hands[0];
-            if (hand.Id == currentHand) {
+            // Only watch for one-handed gestures
+            if (frame.Hands.Count != 1) return;
 
+            Hand hand = frame.Hands[0];
+            CurrentHand = hand;
+
+            handInfo.Text = hand.ToString();
+            pinchStrength.Text = "Pinch strength: " + hand.PinchStrength;
+            pinchDistance.Text = "Pinch distance: " + hand.PinchDistance;
+            grabStrength.Text = "Grab strength: " + hand.GrabStrength;
+            confidence.Text = "Confidence: " + hand.Confidence;
+            timeVisible.Text = "Time visible: " + hand.TimeVisible;
+            palmPosition.Text = "Palm position: " + hand.PalmPosition.ToString();
+
+            if (hand.Id == currentHand) {
+                
             } else {
+                // Ignore hands that have not been visible for long
+                // if (hand.TimeVisible <= 500 * 1000) return;
+                // Ignore the hand if moving a mouse
+                if (hand.PinchDistance <= MIN_PINCH_DIST || hand.PinchStrength > MAX_PINCH_STRENGTH) return;
+                // Another heuristic to ignore mouse/keyboard usage
+                if (Math.Abs(hand.PalmPosition.x) >= 100 || Math.Abs(hand.PalmPosition.z) >= 100) return;
                 // Only toggle music at most once every second
-                if (frame.Timestamp <= lastActionTime + 1000 * 1000) return;                
+                if (frame.Timestamp <= lastActionTime + MIN_ACTION_DEBOUNCE) return;
                 MediaController.toggleMusic();
                 lastActionTime = frame.Timestamp;
                 currentHand = hand.Id;
