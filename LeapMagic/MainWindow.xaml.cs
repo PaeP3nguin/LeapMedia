@@ -11,6 +11,7 @@ namespace LeapMagic {
 
         private const float MIN_PINCH_DIST = 60;
         private const float MAX_PINCH_STRENGTH = 0f;
+        private const float MAX_GRAB_STRENGTH = 0f;
         private const int MIN_ACTION_DEBOUNCE = 1000 * 1000;
 
         private Controller controller = new Controller();
@@ -42,12 +43,14 @@ namespace LeapMagic {
             palmPosition.Text = "Palm position: " + hand.PalmPosition.ToString();
 
             if (hand.Id == currentHand) {
-                
+
             } else {
                 // Ignore hands that have not been visible for long
                 // if (hand.TimeVisible <= 500 * 1000) return;
                 // Ignore the hand if moving a mouse
-                if (hand.PinchDistance <= MIN_PINCH_DIST || hand.PinchStrength > MAX_PINCH_STRENGTH) return;
+                if (hand.PinchDistance <= MIN_PINCH_DIST
+                    || hand.PinchStrength > MAX_PINCH_STRENGTH
+                    || hand.GrabStrength > MAX_GRAB_STRENGTH) return;
                 // Another heuristic to ignore mouse/keyboard usage
                 if (Math.Abs(hand.PalmPosition.x) >= 100 || Math.Abs(hand.PalmPosition.z) >= 100) return;
                 // Only toggle music at most once every second
@@ -61,9 +64,9 @@ namespace LeapMagic {
 
     public class MediaController {
         private const int KEYEVENTF_EXTENDEDKEY = 1;
-        private const int NEXT_TRACK = 0xB0;// code to jump to next track
-        private const int PLAY_PAUSE = 0xB3;// code to play or pause a song
-        private const int PREV_TRACK = 0xB1;// code to jump to prev track
+        private const int NEXT_TRACK = 0xB0; // code to jump to next track
+        private const int PLAY_PAUSE = 0xB3; // code to play or pause a song
+        private const int PREV_TRACK = 0xB1; // code to jump to prev track
 
         [DllImport("user32.dll")]
         private static extern void keybd_event(byte virtualKey, byte scanCode, uint flags, IntPtr extraInfo);
