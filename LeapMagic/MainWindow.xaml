@@ -36,6 +36,7 @@
             <TextBlock x:Name="lastActionText" HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBox"/>
             <TextBlock x:Name="fingerSpread" HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBox"/>
             <TextBlock x:Name="handOpen" HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBox"/>
+            <TextBlock x:Name="handInBounds" HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBox"/>
             <TextBlock x:Name="currentTime" HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBox"/>
             <TextBlock x:Name="nextActionTime" HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBox"/>
             <TextBlock x:Name="sameHand" HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBox"/>

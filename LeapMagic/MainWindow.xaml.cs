@@ -84,6 +84,11 @@ namespace LeapMagic {
             nextActionTime.Text = $"Next action time: {lastActionTime + MIN_ACTION_DEBOUNCE}";
             sameHand.Text = $"Same hand: {hand.Id == currentHand}";
 
+            bool outOfBounds = Math.Abs(hand.PalmPosition.x) >= 100 || Math.Abs(hand.PalmPosition.z) >= 100;
+            handInBounds.Text = $"Out of bounds: {outOfBounds}";
+
+            if (outOfBounds) return;
+
             if (hand.Id == currentHand) {
                 // Only accept continuing gestures with closed hand
                 if (isHandOpen) return;
