@@ -1,36 +1,38 @@
 ﻿using Leap;
 using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Media;
 using System.Windows;
-using System.Runtime.InteropServices;
-using System.Windows.Input;
 using Hardcodet.Wpf.TaskbarNotification;
+using NAudio.Wave;
+using Vector = Leap.Vector;
 
 namespace LeapMagic {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window {
-
-        private const float MIN_PINCH_DIST = 60;
-        private const float MAX_PINCH_STRENGTH = 0;
-        private const float MAX_GRAB_STRENGTH = 0;
         private const int MIN_ACTION_DEBOUNCE = 1000 * 1000;
-
-        private TaskbarIcon icon;
-
-        private Controller controller = new Controller();
+        
         private int currentHand;
         private long lastActionTime;
+        private List<IController> controllers;
+        private WaveOut audioOut;
 
         public MainWindow() {
             InitializeComponent();
 
-            icon = (TaskbarIcon) FindResource("taskbarIcon");
+            TaskbarIcon icon = (TaskbarIcon) FindResource("TaskbarIcon");
             icon.TrayLeftMouseUp += Icon_TrayLeftMouseUp;
-
             Closing += delegate { icon.Dispose(); };
 
-            controller.FrameReady += frameHandler;
+            controllers = new List<IController> { new PlayPauseController() };
+
+            audioOut = new WaveOut();
+            audioOut.Init(new WaveFileReader(Properties.Resources.beep_up));
+
+            new Controller().FrameReady += frameHandler;
         }
 
         private void Icon_TrayLeftMouseUp(object sender, RoutedEventArgs e) {
@@ -46,105 +48,128 @@ namespace LeapMagic {
             base.OnStateChanged(e);
         }
 
-        public Hand CurrentHand { get; set; }
-
-        void frameHandler(object sender, FrameEventArgs eventArgs) {
+        private void frameHandler(object sender, FrameEventArgs eventArgs) {
             Frame frame = eventArgs.frame;
             // Only watch for one-handed gestures
             if (frame.Hands.Count != 1) return;
 
-            Hand hand = frame.Hands[0];
+            HandStats hand = new HandStats(frame.Hands[0]);
+
+            HandInfo.Text = hand.ToString();
+            Confidence.Text = "Confidence: " + hand.Confidence;
+            TimeVisible.Text = "Time visible: " + hand.TimeVisible;
+            PinchStrength.Text = "Pinch strength: " + hand.PinchStrength;
+            PinchDistance.Text = "Pinch distance: " + hand.PinchDistance;
+            GrabStrength.Text = "Grab strength: " + hand.GrabStrength;
+            PalmPosition.Text = $"Palm position: {hand.PalmPosition}";
+            HandYaw.Text = $"Hand yaw: {hand.Direction.Yaw}";
+            HandPitch.Text = $"Hand pitch: {hand.Direction.Pitch}";
+            HandRoll.Text = $"Hand roll: {hand.PalmNormal.Roll}";
+
+            FingerSpread.Text = "Finger spread: " + hand.AngleSum;
+            HandOpen.Text = $"Hand open: {hand.IsOpen}";
+            CurrentTime.Text = $"Current time: {frame.Timestamp}";
+            NextActionTime.Text = $"Next action time: {lastActionTime + MIN_ACTION_DEBOUNCE}";
+            SameHand.Text = $"Same hand: {hand.Id == currentHand}";
+            
+            HandInBounds.Text = $"In bounds: {hand.IsInBounds}";
+            UsingMouse.Text = $"Using mouse: {hand.IsUsingMouse}";
+
             // Only using right hand
             if (hand.IsLeft) return;
-            CurrentHand = hand;
 
-            handInfo.Text = hand.ToString();
-            pinchStrength.Text = "Pinch strength: " + hand.PinchStrength;
-            pinchDistance.Text = "Pinch distance: " + hand.PinchDistance;
-            grabStrength.Text = "Grab strength: " + hand.GrabStrength;
-            confidence.Text = "Confidence: " + hand.Confidence;
-            timeVisible.Text = "Time visible: " + hand.TimeVisible;
-            // TODO: Use position to extablish bounding box
-            palmPosition.Text = $"Palm position: {hand.PalmPosition}";
-            handYaw.Text = $"Hand yaw: {hand.Direction.Yaw}";
-            handPitch.Text = $"Hand pitch: {hand.Direction.Pitch}";
-            handRoll.Text = $"Hand roll: {hand.PalmNormal.Roll}";
+            if (!hand.IsInBounds) return;
+            if (hand.IsUsingMouse) return;
 
-            float angleSum = 0f;
-            Leap.Vector lastAngle = hand.Fingers[0].Direction;
-            foreach (Finger finger in hand.Fingers) {
-                angleSum += finger.Direction.AngleTo(lastAngle);
-                lastAngle = finger.Direction;
+            foreach (var controller in controllers) {
+                controller.OnHand(hand, frame.Timestamp);
             }
-
-            fingerSpread.Text = "Finger spread: " + angleSum;
-            bool isHandOpen = angleSum >= 1;
-            handOpen.Text = $"Hand open: {isHandOpen}";
-            currentTime.Text = $"Current time: {frame.Timestamp}";
-            nextActionTime.Text = $"Next action time: {lastActionTime + MIN_ACTION_DEBOUNCE}";
-            sameHand.Text = $"Same hand: {hand.Id == currentHand}";
-
-            bool outOfBounds = Math.Abs(hand.PalmPosition.x) >= 100 || Math.Abs(hand.PalmPosition.z) >= 100;
-            handInBounds.Text = $"Out of bounds: {outOfBounds}";
-
-            if (outOfBounds) return;
 
             if (hand.Id == currentHand) {
                 // Only accept continuing gestures with closed hand
-                if (isHandOpen) return;
+                if (hand.IsOpen) return;
                 if (hand.Direction.Yaw >= 0.6) {
                     if (frame.Timestamp <= lastActionTime + MIN_ACTION_DEBOUNCE) return;
-                    MediaController.previousTrack();
+                    PlaybackUtil.PreviousTrack();
                     lastActionTime = frame.Timestamp;
-                    lastActionText.Text = "prev";
+                    LastActionText.Text = "prev";
                 }
                 if (hand.Direction.Yaw <= -0.4) {
                     if (frame.Timestamp <= lastActionTime + MIN_ACTION_DEBOUNCE) return;
-                    MediaController.nextTrack();
+                    PlaybackUtil.NextTrack();
                     lastActionTime = frame.Timestamp;
-                    lastActionText.Text = "next";
+                    LastActionText.Text = "next";
                 }
             } else {
-                currentHand = hand.Id;
-                // Ignore one-time gestures with closed hand
-                if (!isHandOpen) return;
-                // Ignore hands that have not been visible for long
-                // if (hand.TimeVisible <= 500 * 1000) return;
-                // Ignore the hand if moving a mouse
-                if (hand.PinchDistance <= MIN_PINCH_DIST
-                    || hand.PinchStrength > MAX_PINCH_STRENGTH
-                    || hand.GrabStrength > MAX_GRAB_STRENGTH) return;
-                // Another heuristic to ignore mouse/keyboard usage
-                if (Math.Abs(hand.PalmPosition.x) >= 100 || Math.Abs(hand.PalmPosition.z) >= 100) return;
-                // Only toggle music at most once every second
-                if (frame.Timestamp <= lastActionTime + MIN_ACTION_DEBOUNCE) return;
-
-                MediaController.toggleMusic();
-                lastActionTime = frame.Timestamp;
-                lastActionText.Text = "pause";
+                // Play a sound to indicate a new hand was detected
+                audioOut.Play();
             }
+
+            currentHand = hand.Id;
         }
     }
 
-    public class MediaController {
-        private const int KEYEVENTF_EXTENDEDKEY = 1;
-        private const int NEXT_TRACK = 0xB0; // code to jump to next track
-        private const int PLAY_PAUSE = 0xB3; // code to play or pause a song
-        private const int PREV_TRACK = 0xB1; // code to jump to prev track
+    public class HandStats : Hand {
+        private const float MIN_PINCH_DIST = 45;
+        private const float MAX_PINCH_STRENGTH = 0;
+        private const float MAX_GRAB_STRENGTH = 0;
 
-        [DllImport("user32.dll")]
-        private static extern void keybd_event(byte virtualKey, byte scanCode, uint flags, IntPtr extraInfo);
+        public new bool IsRight => !IsLeft;
+        public float AngleSum { get; }
+        public bool IsOpen { get; set; }
+        public bool IsInBounds { get; }
+        public bool IsUsingMouse { get; }
 
-        public static void toggleMusic() {
-            keybd_event(PLAY_PAUSE, 0, KEYEVENTF_EXTENDEDKEY, IntPtr.Zero);
-        }
+        public HandStats(Hand hand) {
+            Arm = hand.Arm;
+            Confidence = hand.Confidence;
+            Direction = hand.Direction;
+            Fingers = hand.Fingers;
+            FrameId = hand.FrameId;
+            GrabAngle = hand.GrabAngle;
+            GrabStrength = hand.GrabStrength;
+            Id = hand.Id;
+            IsLeft = hand.IsLeft;
+            PalmNormal = hand.PalmNormal;
+            PalmPosition = hand.PalmPosition;
+            PalmVelocity = hand.PalmVelocity;
+            PalmWidth = hand.PalmWidth;
+            PinchDistance = hand.PinchDistance;
+            PinchStrength = hand.PinchStrength;
+            Rotation = hand.Rotation;
+            StabilizedPalmPosition = hand.StabilizedPalmPosition;
+            TimeVisible = hand.TimeVisible;
+            WristPosition = hand.WristPosition;
 
-        public static void previousTrack() {
-            keybd_event(PREV_TRACK, 0, KEYEVENTF_EXTENDEDKEY, IntPtr.Zero);
-        }
+            AngleSum = 0;
 
-        public static void nextTrack() {
-            keybd_event(NEXT_TRACK, 0, KEYEVENTF_EXTENDEDKEY, IntPtr.Zero);
+            Vector middle = hand.Fingers[2].Direction;
+            for (var i = 0; i < hand.Fingers.Count; i++) {
+                if (i == 2) continue;
+                Vector finger = hand.Fingers[i].Direction;
+                double angle = Math.Atan2(middle.y, middle.x) - Math.Atan2(finger.y, finger.x);
+                if (hand.IsLeft) {
+                    if (i < 2) {
+                        AngleSum -= (float) angle;
+                    } else {
+                        AngleSum += (float) angle;
+                    }
+                } else {
+                    if (i < 2) {
+                        AngleSum += (float) angle;
+                    } else {
+                        AngleSum -= (float) angle;
+                    }
+                }
+            }
+
+            IsOpen = AngleSum >= 2;
+
+            IsInBounds = Math.Abs(hand.PalmPosition.x) <= 100 && Math.Abs(hand.PalmPosition.z) <= 100;
+
+            IsUsingMouse = hand.PinchDistance <= MIN_PINCH_DIST
+                           || hand.PinchStrength > MAX_PINCH_STRENGTH
+                           || hand.GrabStrength > MAX_GRAB_STRENGTH;
         }
     }
 }
