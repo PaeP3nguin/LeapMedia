@@ -42,7 +42,6 @@
             <TextBlock x:Name="HandInBounds" HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBox" />
             <TextBlock x:Name="UsingMouse" HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBox" />
             <TextBlock x:Name="CurrentTime" HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBox" />
-            <TextBlock x:Name="NextActionTime" HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBox" />
             <TextBlock x:Name="SameHand" HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBox" />
         </StackPanel>
     </Grid>

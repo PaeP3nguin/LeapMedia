@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading;
 using System.Windows;
 using Hardcodet.Wpf.TaskbarNotification;
 using Leap;
@@ -10,13 +12,12 @@ namespace LeapMagic {
     ///     Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window {
-        private const int MIN_ACTION_DEBOUNCE = 1000 * 1000;
         private readonly WaveOut beepUp;
-        private readonly List<IController> controllers;
+        private readonly List<GestureDetector> gestureDetectors;
         private readonly WaveFileReader waveFileReader;
 
         private int currentHand;
-        private long lastActionTime;
+        private Controller controller;
 
         public MainWindow() {
             InitializeComponent();
@@ -25,13 +26,26 @@ namespace LeapMagic {
             icon.TrayLeftMouseUp += Icon_TrayLeftMouseUp;
             Closing += delegate { icon.Dispose(); };
 
-            controllers = new List<IController> {new PlayPauseController(), new SkipController()};
+            gestureDetectors = new List<GestureDetector> {
+                new GestureDetector(hand => hand.IsOpen, PlaybackUtil.ToggleMusic),
+                new GestureDetector(hand => hand.Pointing == HandStats.PointingDirection.Left, PlaybackUtil.PreviousTrack),
+                new GestureDetector(hand => hand.Pointing == HandStats.PointingDirection.Right, PlaybackUtil.NextTrack)
+            };
 
             beepUp = new WaveOut();
             waveFileReader = new WaveFileReader(Properties.Resources.beep_up);
             beepUp.Init(waveFileReader);
 
-            new Controller().FrameReady += frameHandler;
+            controller = new Controller();
+            controller.FrameReady += frameHandler;
+            
+            // I hate this. Why don't the events work?
+            while (!controller.IsConnected) {
+                Thread.Sleep(100);
+            }
+            Debug.WriteLine("Connected");
+
+            controller.SetPolicy(Controller.PolicyFlag.POLICY_OPTIMIZE_HMD);
         }
 
         private void Icon_TrayLeftMouseUp(object sender, RoutedEventArgs e) {
@@ -67,14 +81,12 @@ namespace LeapMagic {
             HandOpen.Text = $"Hand open: {hand.IsOpen}";
             HandDirection.Text = $"Hand direction: {hand.Pointing}";
             CurrentTime.Text = $"Current time: {frame.Timestamp}";
-            NextActionTime.Text = $"Next action time: {lastActionTime + MIN_ACTION_DEBOUNCE}";
             SameHand.Text = $"Same hand: {hand.Id == currentHand}";
             HandInBounds.Text = $"In bounds: {hand.IsInBounds}";
             UsingMouse.Text = $"Using mouse: {hand.IsUsingMouse}";
 
-            // Only using right hand
-//            if (hand.IsLeft) return;
-
+            // Only use right hand
+            if (hand.IsLeft) return;
             if (!hand.IsInBounds) return;
             if (hand.IsUsingMouse) return;
 
@@ -84,8 +96,8 @@ namespace LeapMagic {
                 beepUp.Play();
             }
 
-            foreach (var controller in controllers) {
-                controller.OnHand(hand, frame.Timestamp);
+            foreach (var detector in gestureDetectors) {
+                detector.OnHand(hand, frame.Timestamp);
             }
 
             currentHand = hand.Id;
