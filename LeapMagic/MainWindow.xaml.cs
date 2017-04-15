@@ -7,7 +7,7 @@ using Hardcodet.Wpf.TaskbarNotification;
 using Leap;
 using NAudio.Wave;
 
-namespace LeapMagic {
+namespace LeapMedia {
     /// <summary>
     ///     Interaction logic for MainWindow.xaml
     /// </summary>

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LeapMagic {
+namespace LeapMedia {
     /// <summary>
     ///     A general-purpose class for detecting hand gestures
     ///     Handles all the nitty-gritty stuff of debouncing, only triggering once per gesture, etc.

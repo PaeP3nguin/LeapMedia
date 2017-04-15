@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AudioSwitcher.AudioApi;
 
-namespace LeapMagic {
+namespace LeapMedia {
     class VolumeUtil {
         CoreAudioDevice playbackDevice;
 

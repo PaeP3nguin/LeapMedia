@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace LeapMagic {
+namespace LeapMedia {
     public class PlaybackUtil {
         private const int KEYEVENTF_EXTENDEDKEY = 1;
         private const int NEXT_TRACK = 0xB0; // code to jump to next track

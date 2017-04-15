@@ -1,6 +1,6 @@
-﻿<Application x:Class="LeapMagic.App"
+﻿<Application x:Class="LeapMedia.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:LeapMagic"
+             xmlns:local="clr-namespace:LeapMedia"
              StartupUri="MainWindow.xaml">
 </Application>

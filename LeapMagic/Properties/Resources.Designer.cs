@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace LeapMagic.Properties {
+namespace LeapMedia.Properties {
     using System;
     
     

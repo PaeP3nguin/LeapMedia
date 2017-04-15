@@ -1,7 +1,7 @@
 using System;
 using Leap;
 
-namespace LeapMagic {
+namespace LeapMedia {
     public class HandStats : Hand {
         public enum PointingDirection {
             Left,
