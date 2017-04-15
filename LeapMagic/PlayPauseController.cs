@@ -4,20 +4,23 @@
         private const int MIN_OPEN_TIME = 100 * 1000;
         private const int MIN_CLOSE_TIME = 100 * 1000;
 
-        private int lastOpenHandId;
+        private int lastToggleHandId;
+        private int lastHandId;
         private long lastActionTime;
         private long lastHandOpenTime;
         private bool isOpen;
 
         public void OnHand(HandStats hand, long timestamp) {
-            bool wasOpen = isOpen && !(lastOpenHandId > 0 && lastOpenHandId != hand.Id);
+            bool wasOpen = isOpen && lastHandId == hand.Id;
             isOpen = hand.IsOpen;
+
+            lastHandId = hand.Id;
 
             if (!wasOpen && isOpen) {
                 lastHandOpenTime = timestamp;
             } else if (!isOpen) {
                 if (wasOpen && timestamp >= lastHandOpenTime + MIN_CLOSE_TIME) {
-                    lastOpenHandId = -1;
+                    lastToggleHandId = -1;
                 }
                 return;
             }
@@ -26,13 +29,13 @@
             if (timestamp <= lastHandOpenTime + MIN_OPEN_TIME) return;
 
             // Don't let the same open hand toggle music again
-            if (lastOpenHandId == hand.Id) return;
+            if (lastToggleHandId == hand.Id) return;
 
             // Only toggle music at most once every second
             if (timestamp <= lastActionTime + MIN_ACTION_DEBOUNCE) return;
 
             lastActionTime = timestamp;
-            lastOpenHandId = hand.Id;
+            lastToggleHandId = hand.Id;
             PlaybackUtil.ToggleMusic();
         }
     }

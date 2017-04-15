@@ -82,9 +82,11 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="HandStats.cs" />
     <Compile Include="PlaybackUtil.cs" />
     <Compile Include="PlayPauseController.cs" />
     <Compile Include="IController.cs" />
+    <Compile Include="SkipController.cs" />
     <Compile Include="VolumeUtil.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

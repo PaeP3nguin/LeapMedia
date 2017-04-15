@@ -14,36 +14,36 @@
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <StackPanel Grid.Row="1" Grid.Column="0">
-            <TextBlock Text="Hand info" FontWeight="Bold"/>
-            <TextBlock x:Name="HandInfo" HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBox"/>
-            <TextBlock x:Name="Confidence" HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBox"/>
-            <TextBlock x:Name="TimeVisible" HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBox"/>
-            <TextBlock x:Name="PinchStrength" HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBox"/>
-            <TextBlock x:Name="PinchDistance" HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBox"/>
-            <TextBlock x:Name="GrabStrength" HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBox"/>
-            <TextBlock x:Name="PalmPosition" HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBox"/>
-            <TextBlock x:Name="HandYaw" HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBox"/>
-            <TextBlock x:Name="HandPitch" HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBox"/>
-            <TextBlock x:Name="HandRoll" HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBox"/>
+            <TextBlock Text="Hand info" FontWeight="Bold" />
+            <TextBlock x:Name="HandInfo" HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBox" />
+            <TextBlock x:Name="Confidence" HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBox" />
+            <TextBlock x:Name="TimeVisible" HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBox" />
+            <TextBlock x:Name="PinchStrength" HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBox" />
+            <TextBlock x:Name="PinchDistance" HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBox" />
+            <TextBlock x:Name="GrabStrength" HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBox" />
+            <TextBlock x:Name="PalmPosition" HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBox" />
+            <TextBlock x:Name="HandYaw" HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBox" />
+            <TextBlock x:Name="HandPitch" HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBox" />
+            <TextBlock x:Name="HandRoll" HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBox" />
         </StackPanel>
         <StackPanel Grid.Row="1" Grid.Column="1">
-            <TextBlock Text="Diagnostic info" FontWeight="Bold"/>
-            <TextBlock x:Name="LastActionText" HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBox"/>
-            <TextBlock x:Name="FingerSpread" HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBox"/>
-            <TextBlock x:Name="HandOpen" HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBox"/>
-            <TextBlock x:Name="HandInBounds" HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBox"/>
-            <TextBlock x:Name="UsingMouse" HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBox"/>
-            <TextBlock x:Name="CurrentTime" HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBox"/>
-            <TextBlock x:Name="NextActionTime" HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBox"/>
-            <TextBlock x:Name="SameHand" HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBox"/>
+            <TextBlock Text="Diagnostic info" FontWeight="Bold" />
+            <TextBlock x:Name="FingerSpread" HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBox" />
+            <TextBlock x:Name="HandOpen" HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBox" />
+            <TextBlock x:Name="HandDirection" HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBox" />
+            <TextBlock x:Name="HandInBounds" HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBox" />
+            <TextBlock x:Name="UsingMouse" HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBox" />
+            <TextBlock x:Name="CurrentTime" HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBox" />
+            <TextBlock x:Name="NextActionTime" HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBox" />
+            <TextBlock x:Name="SameHand" HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBox" />
         </StackPanel>
     </Grid>
 </Window>
