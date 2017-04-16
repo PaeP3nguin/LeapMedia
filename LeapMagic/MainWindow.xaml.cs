@@ -13,8 +13,9 @@ namespace LeapMedia {
     /// </summary>
     public partial class MainWindow : Window {
         private readonly WaveOut beepUp;
-        private readonly List<GestureDetector> gestureDetectors;
         private readonly WaveFileReader waveFileReader;
+        private readonly List<GestureDetector> gestureDetectors;
+        private ScrubDetector scrubDetector;
 
         private int currentHand;
         private Controller controller;
@@ -31,6 +32,8 @@ namespace LeapMedia {
                 new GestureDetector(hand => hand.Pointing == HandStats.PointingDirection.Left, PlaybackUtil.PreviousTrack),
                 new GestureDetector(hand => hand.Pointing == HandStats.PointingDirection.Right, PlaybackUtil.NextTrack)
             };
+
+            scrubDetector = new ScrubDetector();
 
             beepUp = new WaveOut();
             waveFileReader = new WaveFileReader(Properties.Resources.beep_up);
@@ -99,6 +102,8 @@ namespace LeapMedia {
             foreach (var detector in gestureDetectors) {
                 detector.OnHand(hand, frame.Timestamp);
             }
+
+            scrubDetector.OnHand(hand, frame.Timestamp);
 
             currentHand = hand.Id;
         }
