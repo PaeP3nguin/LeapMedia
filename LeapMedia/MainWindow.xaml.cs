@@ -100,24 +100,26 @@ namespace LeapMedia {
 
             var hand = new HandStats(frame.Hands[0]);
 
-            HandInfo.Text = hand.ToString();
-            Confidence.Text = "Confidence: " + hand.Confidence;
-            TimeVisible.Text = "Time visible: " + hand.TimeVisible;
-            PinchStrength.Text = "Pinch strength: " + hand.PinchStrength;
-            PinchDistance.Text = "Pinch distance: " + hand.PinchDistance;
-            GrabStrength.Text = "Grab strength: " + hand.GrabStrength;
-            PalmPosition.Text = $"Palm position: {hand.PalmPosition}";
-            HandYaw.Text = $"Hand yaw: {hand.Direction.Yaw}";
-            HandPitch.Text = $"Hand pitch: {hand.Direction.Pitch}";
-            HandRoll.Text = $"Hand roll: {hand.PalmNormal.Roll}";
+            if (WindowState != WindowState.Minimized) {
+                HandInfo.Text = hand.ToString();
+                Confidence.Text = "Confidence: " + hand.Confidence;
+                TimeVisible.Text = "Time visible: " + hand.TimeVisible;
+                PinchStrength.Text = "Pinch strength: " + hand.PinchStrength;
+                PinchDistance.Text = "Pinch distance: " + hand.PinchDistance;
+                GrabStrength.Text = "Grab strength: " + hand.GrabStrength;
+                PalmPosition.Text = $"Palm position: {hand.PalmPosition}";
+                HandYaw.Text = $"Hand yaw: {hand.Direction.Yaw}";
+                HandPitch.Text = $"Hand pitch: {hand.Direction.Pitch}";
+                HandRoll.Text = $"Hand roll: {hand.PalmNormal.Roll}";
 
-            FingerSpread.Text = "Finger spread: " + hand.AngleSum;
-            HandOpen.Text = $"Hand open: {hand.IsOpen}";
-            HandDirection.Text = $"Hand direction: {hand.Pointing}";
-            CurrentTime.Text = $"Current time: {frame.Timestamp}";
-            SameHand.Text = $"Same hand: {hand.Id == currentHand}";
-            HandInBounds.Text = $"In bounds: {hand.IsInBounds}";
-            UsingMouse.Text = $"Using mouse: {hand.IsUsingMouse}";
+                FingerSpread.Text = "Finger spread: " + hand.AngleSum;
+                HandOpen.Text = $"Hand open: {hand.IsOpen}";
+                HandDirection.Text = $"Hand direction: {hand.Pointing}";
+                CurrentTime.Text = $"Current time: {frame.Timestamp}";
+                SameHand.Text = $"Same hand: {hand.Id == currentHand}";
+                HandInBounds.Text = $"In bounds: {hand.IsInBounds}";
+                UsingMouse.Text = $"Using mouse: {hand.IsUsingMouse}";
+            }
 
             // Only use right hand
             if (hand.IsLeft) return;
