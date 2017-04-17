@@ -5,22 +5,31 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:tb="http://www.hardcodet.net/taskbar"
         mc:Ignorable="d"
-        Title="LeapMedia" Height="350" Width="525">
+        Title="LeapMedia" Height="350" Width="550">
     <Window.Resources>
         <tb:TaskbarIcon
             x:Key="TaskbarIcon"
             IconSource="favicon.ico"
-            ToolTipText="hello world" />
+            TrayLeftMouseUp="TaskbarIconClick">
+            <tb:TaskbarIcon.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Click="ToggleTracking" Header="Pause" />
+                    <MenuItem Click="Quit" Header="Quit" />
+                </ContextMenu>
+            </tb:TaskbarIcon.ContextMenu>
+        </tb:TaskbarIcon>
     </Window.Resources>
-    <Grid>
+    <Grid Margin="10px">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
+        
         <StackPanel Grid.Row="1" Grid.Column="0">
             <TextBlock Text="Hand info" FontWeight="Bold" />
             <TextBlock x:Name="HandInfo" HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBox" />
@@ -34,6 +43,7 @@
             <TextBlock x:Name="HandPitch" HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBox" />
             <TextBlock x:Name="HandRoll" HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBox" />
         </StackPanel>
+        
         <StackPanel Grid.Row="1" Grid.Column="1">
             <TextBlock Text="Diagnostic info" FontWeight="Bold" />
             <TextBlock x:Name="FingerSpread" HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBox" />
@@ -44,5 +54,8 @@
             <TextBlock x:Name="CurrentTime" HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBox" />
             <TextBlock x:Name="SameHand" HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBox" />
         </StackPanel>
+
+        <Button Name="ToggleButton" Click="ToggleTracking" Content="Pause" Width="200px" Padding="8px" Grid.Row="2" Grid.Column="0" />
+        <Button Click="Quit" Content="Quit" Width="200px" Grid.Row="2" Grid.Column="1" />
     </Grid>
 </Window>

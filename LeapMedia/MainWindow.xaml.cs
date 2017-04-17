@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading;
 using System.Windows;
+using System.Windows.Controls;
 using Hardcodet.Wpf.TaskbarNotification;
 using Leap;
 using NAudio.Wave;
+using Frame = Leap.Frame;
 
 namespace LeapMedia {
     /// <summary>
@@ -13,36 +16,43 @@ namespace LeapMedia {
     /// </summary>
     public partial class MainWindow : Window {
         private readonly WaveOut beepUp;
-        private readonly WaveFileReader waveFileReader;
         private readonly List<GestureDetector> gestureDetectors;
-        private ScrubDetector scrubDetector;
+        private readonly WaveFileReader waveFileReader;
+        private readonly Controller controller;
+        private readonly ScrubDetector scrubDetector;
+        private TaskbarIcon taskbarIcon;
 
         private int currentHand;
-        private Controller controller;
+        private bool isTracking;
+        private MenuItem toggleMenuItem;
 
         public MainWindow() {
             InitializeComponent();
-
-            var icon = (TaskbarIcon) FindResource("TaskbarIcon");
-            icon.TrayLeftMouseUp += Icon_TrayLeftMouseUp;
-            Closing += delegate { icon.Dispose(); };
+            InitializeTaskbarIcon();
 
             gestureDetectors = new List<GestureDetector> {
-                new GestureDetector(hand => hand.IsOpen, PlaybackUtil.ToggleMusic),
-                new GestureDetector(hand => hand.Pointing == HandStats.PointingDirection.Left, PlaybackUtil.PreviousTrack),
-                new GestureDetector(hand => hand.Pointing == HandStats.PointingDirection.Right, PlaybackUtil.NextTrack),
-                new GestureDetector(hand => hand.PalmPosition.y >= 200, VolumeController.Mute)
+                new GestureDetector(hand => hand.IsOpen,
+                    PlaybackUtil.ToggleMusic),
+                new GestureDetector(hand => hand.Pointing == HandStats.PointingDirection.Left,
+                    PlaybackUtil.PreviousTrack),
+                new GestureDetector(hand => hand.Pointing == HandStats.PointingDirection.Right,
+                    PlaybackUtil.NextTrack),
+                new GestureDetector(hand => hand.PalmPosition.y >= 200,
+                    VolumeController.Mute)
             };
 
             scrubDetector = new ScrubDetector();
 
-            beepUp = new WaveOut();
+            beepUp = new WaveOut {
+                DesiredLatency = 700,
+                NumberOfBuffers = 3
+            };
             waveFileReader = new WaveFileReader(Properties.Resources.beep_up);
             beepUp.Init(waveFileReader);
 
             controller = new Controller();
-            controller.FrameReady += frameHandler;
-            
+            StartTracking();
+
             // I hate this. Why don't the events work?
             while (!controller.IsConnected) {
                 Thread.Sleep(100);
@@ -52,7 +62,12 @@ namespace LeapMedia {
             controller.SetPolicy(Controller.PolicyFlag.POLICY_OPTIMIZE_HMD);
         }
 
-        private void Icon_TrayLeftMouseUp(object sender, RoutedEventArgs e) {
+        private void InitializeTaskbarIcon() {
+            taskbarIcon = (TaskbarIcon) FindResource("TaskbarIcon");
+            toggleMenuItem = (MenuItem) taskbarIcon.ContextMenu?.Items[0];
+        }
+
+        private void TaskbarIconClick(object sender, RoutedEventArgs e) {
             Show();
             WindowState = WindowState.Normal;
         }
@@ -61,6 +76,21 @@ namespace LeapMedia {
             if (WindowState == WindowState.Minimized) Hide();
 
             base.OnStateChanged(e);
+        }
+
+        protected override void OnClosing(CancelEventArgs e) {
+            taskbarIcon.Dispose();
+            base.OnClosing(e);
+        }
+
+        private void StartTracking() {
+            isTracking = true;
+            controller.FrameReady += frameHandler;
+        }
+
+        private void StopTracking() {
+            isTracking = false;
+            controller.FrameReady -= frameHandler;
         }
 
         private void frameHandler(object sender, FrameEventArgs eventArgs) {
@@ -107,6 +137,22 @@ namespace LeapMedia {
             scrubDetector.OnHand(hand, frame.Timestamp);
 
             currentHand = hand.Id;
+        }
+
+        private void ToggleTracking(object sender, RoutedEventArgs e) {
+            if (isTracking) {
+                StopTracking();
+                toggleMenuItem.Header = "Resume";
+                ToggleButton.Content = "Resume";
+            } else {
+                StartTracking();
+                toggleMenuItem.Header = "Pause";
+                ToggleButton.Content = "Pause";
+            }
+        }
+
+        private void Quit(object sender, RoutedEventArgs e) {
+            Application.Current.Shutdown();
         }
     }
 }
