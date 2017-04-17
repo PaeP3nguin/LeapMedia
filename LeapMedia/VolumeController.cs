@@ -15,15 +15,15 @@ namespace LeapMedia {
         private static extern void keybd_event(byte virtualKey, byte scanCode, uint flags, IntPtr extraInfo);
 
         public static void VolumeUp() {
-            keybd_event((byte) Keys.VolumeUp, 0, 0, IntPtr.Zero);
+            keybd_event((byte) Keys.VolumeUp, 0, 1, IntPtr.Zero);
         }
 
         public static void VolumeDown() {
-            keybd_event((byte) Keys.VolumeDown, 0, 0, IntPtr.Zero);
+            keybd_event((byte) Keys.VolumeDown, 0, 1, IntPtr.Zero);
         }
 
         public static void Mute() {
-            keybd_event((byte) Keys.VolumeMute, 0, 0, IntPtr.Zero);
+            keybd_event((byte) Keys.VolumeMute, 0, 1, IntPtr.Zero);
         }
 
         public void VolumeUp(int increment) {
