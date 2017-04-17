@@ -1,6 +1,6 @@
 # LeapMedia
 ### Dead simple media controls for Windows with Leap Motion.
-A lot of [Leap Media computer control applications][1] are either cost money or are rather slow and unintuitive to use.
+A lot of [Leap Media computer control applications][1] either cost money or are rather slow and unintuitive to use.
 In addition, I wanted to mount my Leap under my monitor facing downwards for a cleaner look.
 I whipped together LeapMedia to remedy my first-world problems.
 
