@@ -30,7 +30,8 @@ namespace LeapMedia {
             gestureDetectors = new List<GestureDetector> {
                 new GestureDetector(hand => hand.IsOpen, PlaybackUtil.ToggleMusic),
                 new GestureDetector(hand => hand.Pointing == HandStats.PointingDirection.Left, PlaybackUtil.PreviousTrack),
-                new GestureDetector(hand => hand.Pointing == HandStats.PointingDirection.Right, PlaybackUtil.NextTrack)
+                new GestureDetector(hand => hand.Pointing == HandStats.PointingDirection.Right, PlaybackUtil.NextTrack),
+                new GestureDetector(hand => hand.PalmPosition.y >= 200, VolumeController.Mute)
             };
 
             scrubDetector = new ScrubDetector();

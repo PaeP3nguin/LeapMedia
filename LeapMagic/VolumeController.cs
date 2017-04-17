@@ -22,6 +22,10 @@ namespace LeapMedia {
             keybd_event((byte) Keys.VolumeDown, 0, 0, IntPtr.Zero);
         }
 
+        public static void Mute() {
+            keybd_event((byte) Keys.VolumeMute, 0, 0, IntPtr.Zero);
+        }
+
         public void VolumeUp(int increment) {
             playbackDevice.Volume += increment;
         }
