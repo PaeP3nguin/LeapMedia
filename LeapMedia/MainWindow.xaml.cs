@@ -60,6 +60,7 @@ namespace LeapMedia {
             Debug.WriteLine("Connected");
 
             controller.SetPolicy(Controller.PolicyFlag.POLICY_OPTIMIZE_HMD);
+            controller.SetPolicy(Controller.PolicyFlag.POLICY_BACKGROUND_FRAMES);
         }
 
         private void InitializeTaskbarIcon() {
