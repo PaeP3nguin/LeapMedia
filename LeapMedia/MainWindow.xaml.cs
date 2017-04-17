@@ -123,8 +123,10 @@ namespace LeapMedia {
 
             // Only use right hand
             if (hand.IsLeft) return;
-            if (!hand.IsInBounds) return;
-            if (hand.IsUsingMouse) return;
+            if (!hand.IsInBounds || hand.IsUsingMouse) {
+                currentHand = 0;
+                return;
+            }
 
             if (hand.Id != currentHand) {
                 // Play a sound to indicate a new hand was detected
