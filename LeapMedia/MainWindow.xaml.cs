@@ -15,9 +15,8 @@ namespace LeapMedia {
     /// </summary>
     public partial class MainWindow : Window {
         private readonly AudioController audioController;
-        private readonly List<GestureDetector> gestureDetectors;
-        private readonly Controller controller;
-        private readonly ScrubDetector scrubDetector;
+        private readonly List<IGestureDetector> gestureDetectors;
+        private readonly Controller leapController;
         private TaskbarIcon taskbarIcon;
 
         private int currentHand;
@@ -28,7 +27,7 @@ namespace LeapMedia {
             InitializeComponent();
             InitializeTaskbarIcon();
 
-            gestureDetectors = new List<GestureDetector> {
+            gestureDetectors = new List<IGestureDetector> {
                 new GestureDetector(hand => hand.IsOpen,
                     PlaybackUtil.ToggleMusic),
                 new GestureDetector(hand => hand.Pointing == HandStats.PointingDirection.Left,
@@ -36,25 +35,23 @@ namespace LeapMedia {
                 new GestureDetector(hand => hand.Pointing == HandStats.PointingDirection.Right,
                     PlaybackUtil.NextTrack),
                 new GestureDetector(hand => hand.PalmPosition.y >= 200,
-                    VolumeController.Mute)
+                    VolumeController.Mute),
+                new ScrubDetector()
             };
 
-            scrubDetector = new ScrubDetector();
-
             audioController = new AudioController();
-
-            controller = new Controller();
+            leapController = new Controller();
 
             StartTracking();
 
             // I hate this. Why don't the events work?
-            while (!controller.IsConnected) {
+            while (!leapController.IsConnected) {
                 Thread.Sleep(100);
             }
             Debug.WriteLine("Connected");
 
-            controller.SetPolicy(Controller.PolicyFlag.POLICY_OPTIMIZE_HMD);
-            controller.SetPolicy(Controller.PolicyFlag.POLICY_BACKGROUND_FRAMES);
+            leapController.SetPolicy(Controller.PolicyFlag.POLICY_OPTIMIZE_HMD);
+            leapController.SetPolicy(Controller.PolicyFlag.POLICY_BACKGROUND_FRAMES);
         }
 
         private void InitializeTaskbarIcon() {
@@ -80,12 +77,12 @@ namespace LeapMedia {
 
         private void StartTracking() {
             isTracking = true;
-            controller.FrameReady += frameHandler;
+            leapController.FrameReady += frameHandler;
         }
 
         private void StopTracking() {
             isTracking = false;
-            controller.FrameReady -= frameHandler;
+            leapController.FrameReady -= frameHandler;
         }
 
         private void frameHandler(object sender, FrameEventArgs eventArgs) {
@@ -131,8 +128,6 @@ namespace LeapMedia {
             foreach (var detector in gestureDetectors) {
                 detector.OnHand(hand, frame.Timestamp);
             }
-
-            scrubDetector.OnHand(hand, frame.Timestamp);
 
             currentHand = hand.Id;
         }

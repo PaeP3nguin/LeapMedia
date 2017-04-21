@@ -5,7 +5,7 @@ namespace LeapMedia {
     ///     A general-purpose class for detecting hand gestures
     ///     Handles all the nitty-gritty stuff of debouncing, only triggering once per gesture, etc.
     /// </summary>
-    internal class GestureDetector {
+    internal class GestureDetector : IGestureDetector {
         private const int MIN_TRIGGER_DEBOUNCE = 500 * 1000;
         private const int MIN_DETECTION_TIME = 100 * 1000;
         private const int MIN_COOLDOWN_TIME = 100 * 1000;

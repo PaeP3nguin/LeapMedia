@@ -1,9 +1,12 @@
 ﻿using System;
 
 namespace LeapMedia {
-    internal class ScrubDetector {
+    /// <summary>
+    ///     Gesture detector that detects lateral hand movement and adjusts volume
+    /// </summary>
+    internal class ScrubDetector : IGestureDetector {
         public const float MIN_TRIGGER_DISTANCE = 30;
-        public const float MIN_TIME_VISIBLE = 750 * 1000;
+        public const float MIN_TIME_VISIBLE = 500 * 1000;
 
         private float lastXTriggered = float.NaN;
 
