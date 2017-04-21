@@ -7,7 +7,6 @@ using System.Windows;
 using System.Windows.Controls;
 using Hardcodet.Wpf.TaskbarNotification;
 using Leap;
-using NAudio.Wave;
 using Frame = Leap.Frame;
 
 namespace LeapMedia {
@@ -15,9 +14,8 @@ namespace LeapMedia {
     ///     Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window {
-        private readonly WaveOut beepUp;
+        private readonly AudioController audioController;
         private readonly List<GestureDetector> gestureDetectors;
-        private readonly WaveFileReader waveFileReader;
         private readonly Controller controller;
         private readonly ScrubDetector scrubDetector;
         private TaskbarIcon taskbarIcon;
@@ -43,14 +41,10 @@ namespace LeapMedia {
 
             scrubDetector = new ScrubDetector();
 
-            beepUp = new WaveOut {
-                DesiredLatency = 700,
-                NumberOfBuffers = 3
-            };
-            waveFileReader = new WaveFileReader(Properties.Resources.beep_up);
-            beepUp.Init(waveFileReader);
+            audioController = new AudioController();
 
             controller = new Controller();
+
             StartTracking();
 
             // I hate this. Why don't the events work?
@@ -131,8 +125,7 @@ namespace LeapMedia {
 
             if (hand.Id != currentHand) {
                 // Play a sound to indicate a new hand was detected
-                waveFileReader.Position = 0;
-                beepUp.Play();
+                audioController.PlayBeepUp();
             }
 
             foreach (var detector in gestureDetectors) {
