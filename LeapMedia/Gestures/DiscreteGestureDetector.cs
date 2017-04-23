@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LeapMedia {
+namespace LeapMedia.Gestures {
     /// <summary>
     ///     A general-purpose class for detecting discrete hand gestures
     ///     A discrete gesture is one where the hand is either making or not making the gesture and an action should be
@@ -60,6 +60,39 @@ namespace LeapMedia {
             lastActionTime = timestamp;
             lastTriggerHandId = hand.Id;
             onGesture();
+        }
+
+        /// <summary>
+        ///     Create a gesture detector that toggles the play/pause state of music when the hand's fingers are spread wide
+        /// </summary>
+        /// <returns></returns>
+        public static DiscreteGestureDetector OpenHandToggleMusicGesture() {
+            return new DiscreteGestureDetector(hand => hand.IsOpen,
+                PlaybackUtil.ToggleMusic);
+        }
+
+        /// <summary>
+        ///     Create a gesture detector that skips to the previous track when the hand points left (rotating along the Y axis)
+        /// </summary>
+        public static DiscreteGestureDetector HandLeftPrevTrackGesture() {
+            return new DiscreteGestureDetector(hand => hand.Pointing == HandStats.PointingDirection.Left,
+                PlaybackUtil.PreviousTrack);
+        }
+
+        /// <summary>
+        ///     Create a gesture detector that skips to the previous track when the hand points left (rotating along the Y axis)
+        /// </summary>
+        public static DiscreteGestureDetector HandRightNextTrackGesture() {
+            return new DiscreteGestureDetector(hand => hand.Pointing == HandStats.PointingDirection.Right,
+                PlaybackUtil.NextTrack);
+        }
+
+        /// <summary>
+        ///     Create a gesture detector that mutes the audio when the hand moves far away from the Leap
+        /// </summary>
+        public static DiscreteGestureDetector HandDownMuteMusicGesture() {
+            return new DiscreteGestureDetector(hand => hand.PalmPosition.y >= 200,
+                VolumeController.Mute);
         }
     }
 }

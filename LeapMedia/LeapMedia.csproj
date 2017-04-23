@@ -106,10 +106,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="AudioController.cs" />
-    <Compile Include="ContinuousGestureDetector.cs" />
-    <Compile Include="DiscreteGestureDetector.cs" />
+    <Compile Include="Gestures\DiscreteGestureDetector.cs" />
+    <Compile Include="Gestures\ContinuousGestureDetector.cs" />
     <Compile Include="HandStats.cs" />
-    <Compile Include="IGestureDetector.cs" />
+    <Compile Include="Gestures\IGestureDetector.cs" />
     <Compile Include="PlaybackUtil.cs" />
     <Compile Include="VolumeController.cs" />
     <Compile Include="MainWindow.xaml.cs">
@@ -171,6 +171,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Gestures\Examples\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

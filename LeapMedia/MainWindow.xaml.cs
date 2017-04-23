@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using Hardcodet.Wpf.TaskbarNotification;
 using Leap;
+using LeapMedia.Gestures;
 using Frame = Leap.Frame;
 
 namespace LeapMedia {
@@ -28,40 +29,10 @@ namespace LeapMedia {
             InitializeTaskbarIcon();
 
             gestureDetectors = new List<IGestureDetector> {
-                new DiscreteGestureDetector(hand => hand.IsOpen,
-                    PlaybackUtil.ToggleMusic),
-                new DiscreteGestureDetector(hand => hand.Pointing == HandStats.PointingDirection.Left,
-                    PlaybackUtil.PreviousTrack),
-                new DiscreteGestureDetector(hand => hand.Pointing == HandStats.PointingDirection.Right,
-                    PlaybackUtil.NextTrack),
-                new DiscreteGestureDetector(hand => hand.PalmPosition.y >= 200,
-                    VolumeController.Mute),
-//                new ContinuousGestureDetector(hand => hand.TimeVisible >= 500 * 1000, hand => hand.PalmPosition.x, 30,
-//                    delegate(bool isPositive) {
-//                        if (isPositive) {
-//                            VolumeController.VolumeUp();
-//                        } else {
-//                            VolumeController.VolumeDown();
-//                        }
-//                    }),
-                new ContinuousGestureDetector(
-                    hand => !hand.IsOpen,
-                    delegate(HandStats hand) {
-                        if (hand.Roll >= 0) {
-                            return hand.Roll;
-                        } else {
-                            // Transform the -PI to 0 space to be from PI to 2 * PI
-                            return (float) (Math.PI * 2 + hand.Roll);
-                        }
-                    },
-                    0.3f,
-                    delegate(bool isPositive) {
-                        if (isPositive) {
-                            VolumeController.VolumeUp();
-                        } else {
-                            VolumeController.VolumeDown();
-                        }
-                    })
+                DiscreteGestureDetector.OpenHandToggleMusicGesture(),
+                DiscreteGestureDetector.HandLeftPrevTrackGesture(),
+                DiscreteGestureDetector.HandRightNextTrackGesture(),
+                ContinuousGestureDetector.RotateHandChangeVolumeGesture()
             };
 
             audioController = new AudioController();

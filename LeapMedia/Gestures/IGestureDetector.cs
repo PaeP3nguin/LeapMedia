@@ -1,4 +1,4 @@
-﻿namespace LeapMedia {
+﻿namespace LeapMedia.Gestures {
     /// <summary>
     ///     Generic interface for a gesture detector
     /// </summary>
