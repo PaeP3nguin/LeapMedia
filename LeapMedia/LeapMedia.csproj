@@ -50,7 +50,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>icon.ico</ApplicationIcon>
+    <ApplicationIcon>Assets\icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AudioSwitcher.AudioApi, Version=3.0.0.209, Culture=neutral, PublicKeyToken=fda5729e2db3a64f, processorArchitecture=MSIL">
@@ -110,8 +110,8 @@
     <Compile Include="Gestures\ContinuousGestureDetector.cs" />
     <Compile Include="HandStats.cs" />
     <Compile Include="Gestures\IGestureDetector.cs" />
-    <Compile Include="PlaybackUtil.cs" />
-    <Compile Include="VolumeController.cs" />
+    <Compile Include="Util\PlaybackUtil.cs" />
+    <Compile Include="Util\VolumeUtil.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -146,16 +146,16 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="taskbar_icon.ico" />
+    <Resource Include="Assets\taskbar_icon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="beep_down.wav" />
+    <None Include="Assets\beep_down.wav" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="beep_up.wav" />
+    <None Include="Assets\beep_up.wav" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="beep_a5.wav" />
+    <None Include="Assets\beep_a5.wav" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">
@@ -170,11 +170,9 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="icon.ico" />
+    <Resource Include="Assets\icon.ico" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Gestures\Examples\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy /yr "$(LEAP_SDK)\lib\x64\LeapC.dll" "$(TargetDir)"</PostBuildEvent>

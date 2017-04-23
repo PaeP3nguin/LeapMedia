@@ -1,6 +1,6 @@
 ﻿using WindowsInput.Native;
 
-namespace LeapMedia {
+namespace LeapMedia.Util {
     public class PlaybackUtil {
         public static void ToggleMusic() {
             App.InputSimulator.Keyboard.KeyPress(VirtualKeyCode.MEDIA_PLAY_PAUSE);

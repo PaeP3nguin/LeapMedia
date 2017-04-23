@@ -1,4 +1,5 @@
 using System;
+using LeapMedia.Util;
 
 namespace LeapMedia.Gestures {
     /// <summary>
@@ -70,9 +71,9 @@ namespace LeapMedia.Gestures {
                 // Increase volume if rotating clockwise
                 delegate(bool isPositive) {
                     if (isPositive) {
-                        VolumeController.VolumeUp();
+                        VolumeUtil.VolumeUp();
                     } else {
-                        VolumeController.VolumeDown();
+                        VolumeUtil.VolumeDown();
                     }
                 });
         }
@@ -91,9 +92,9 @@ namespace LeapMedia.Gestures {
                 // Increase volume if moving right
                 delegate(bool isPositive) {
                     if (isPositive) {
-                        VolumeController.VolumeUp();
+                        VolumeUtil.VolumeUp();
                     } else {
-                        VolumeController.VolumeDown();
+                        VolumeUtil.VolumeDown();
                     }
                 });
         }

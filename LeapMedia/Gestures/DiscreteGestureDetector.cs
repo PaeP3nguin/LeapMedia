@@ -1,4 +1,5 @@
 ﻿using System;
+using LeapMedia.Util;
 
 namespace LeapMedia.Gestures {
     /// <summary>
@@ -92,7 +93,7 @@ namespace LeapMedia.Gestures {
         /// </summary>
         public static DiscreteGestureDetector HandDownMuteMusicGesture() {
             return new DiscreteGestureDetector(hand => hand.PalmPosition.y >= 200,
-                VolumeController.Mute);
+                VolumeUtil.Mute);
         }
     }
 }

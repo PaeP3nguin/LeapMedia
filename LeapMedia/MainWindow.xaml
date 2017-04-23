@@ -9,7 +9,7 @@
     <Window.Resources>
         <tb:TaskbarIcon
             x:Key="TaskbarIcon"
-            IconSource="taskbar_icon.ico"
+            IconSource="Assets/taskbar_icon.ico"
             TrayLeftMouseUp="TaskbarIconClick">
             <tb:TaskbarIcon.ContextMenu>
                 <ContextMenu>

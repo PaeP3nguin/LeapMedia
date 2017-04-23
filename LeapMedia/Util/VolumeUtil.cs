@@ -1,11 +1,11 @@
 ﻿using WindowsInput.Native;
 using AudioSwitcher.AudioApi.CoreAudio;
 
-namespace LeapMedia {
-    internal class VolumeController {
+namespace LeapMedia.Util {
+    internal class VolumeUtil {
         private readonly CoreAudioDevice playbackDevice;
 
-        public VolumeController() {
+        public VolumeUtil() {
             playbackDevice = new CoreAudioController().DefaultPlaybackDevice;
         }
 
