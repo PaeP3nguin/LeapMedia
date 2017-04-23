@@ -106,11 +106,11 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="AudioController.cs" />
-    <Compile Include="GestureDetector.cs" />
+    <Compile Include="ContinuousGestureDetector.cs" />
+    <Compile Include="DiscreteGestureDetector.cs" />
     <Compile Include="HandStats.cs" />
     <Compile Include="IGestureDetector.cs" />
     <Compile Include="PlaybackUtil.cs" />
-    <Compile Include="ScrubDetector.cs" />
     <Compile Include="VolumeController.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

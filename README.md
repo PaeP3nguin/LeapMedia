@@ -14,12 +14,11 @@ I whipped together LeapMedia to remedy my first-world problems.
 #### Anti-features:
 * No configuration options via UI
 * Made for top-down usage
-* Doesn't work if the foreground app is running as admin (will fix)
 
 ## Controls
 * Play/Pause: stretch your fingers away from each other
 * Next/prev track: rotate your hand from the wrist to the left or right
-* Volume up/down: move your hand left or right
+* Volume up/down: rotate your hand clockwise or counterclockwise
 * Mute: move your hand far from the Leap
 
 [1]: https://apps.leapmotion.com/categories/computer-controls

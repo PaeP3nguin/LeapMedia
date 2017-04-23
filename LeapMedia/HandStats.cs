@@ -30,6 +30,9 @@ namespace LeapMedia {
             PinchDistance = hand.PinchDistance;
             PinchStrength = hand.PinchStrength;
             Rotation = hand.Rotation;
+            Roll = hand.PalmNormal.Roll;
+            Pitch = hand.Direction.Pitch;
+            Yaw = hand.Direction.Yaw;
             StabilizedPalmPosition = hand.StabilizedPalmPosition;
             TimeVisible = hand.TimeVisible;
             WristPosition = hand.WristPosition;
@@ -73,6 +76,9 @@ namespace LeapMedia {
             }
         }
 
+        public float Roll { get; set; }
+        public float Pitch { get; set; }
+        public float Yaw { get; set; }
         public new bool IsRight => !IsLeft;
         public float AngleSum { get; }
         public bool IsOpen { get; set; }

@@ -28,15 +28,40 @@ namespace LeapMedia {
             InitializeTaskbarIcon();
 
             gestureDetectors = new List<IGestureDetector> {
-                new GestureDetector(hand => hand.IsOpen,
+                new DiscreteGestureDetector(hand => hand.IsOpen,
                     PlaybackUtil.ToggleMusic),
-                new GestureDetector(hand => hand.Pointing == HandStats.PointingDirection.Left,
+                new DiscreteGestureDetector(hand => hand.Pointing == HandStats.PointingDirection.Left,
                     PlaybackUtil.PreviousTrack),
-                new GestureDetector(hand => hand.Pointing == HandStats.PointingDirection.Right,
+                new DiscreteGestureDetector(hand => hand.Pointing == HandStats.PointingDirection.Right,
                     PlaybackUtil.NextTrack),
-                new GestureDetector(hand => hand.PalmPosition.y >= 200,
+                new DiscreteGestureDetector(hand => hand.PalmPosition.y >= 200,
                     VolumeController.Mute),
-                new ScrubDetector()
+//                new ContinuousGestureDetector(hand => hand.TimeVisible >= 500 * 1000, hand => hand.PalmPosition.x, 30,
+//                    delegate(bool isPositive) {
+//                        if (isPositive) {
+//                            VolumeController.VolumeUp();
+//                        } else {
+//                            VolumeController.VolumeDown();
+//                        }
+//                    }),
+                new ContinuousGestureDetector(
+                    hand => !hand.IsOpen,
+                    delegate(HandStats hand) {
+                        if (hand.Roll >= 0) {
+                            return hand.Roll;
+                        } else {
+                            // Transform the -PI to 0 space to be from PI to 2 * PI
+                            return (float) (Math.PI * 2 + hand.Roll);
+                        }
+                    },
+                    0.3f,
+                    delegate(bool isPositive) {
+                        if (isPositive) {
+                            VolumeController.VolumeUp();
+                        } else {
+                            VolumeController.VolumeDown();
+                        }
+                    })
             };
 
             audioController = new AudioController();
@@ -100,9 +125,9 @@ namespace LeapMedia {
                 PinchDistance.Text = "Pinch distance: " + hand.PinchDistance;
                 GrabStrength.Text = "Grab strength: " + hand.GrabStrength;
                 PalmPosition.Text = $"Palm position: {hand.PalmPosition}";
-                HandYaw.Text = $"Hand yaw: {hand.Direction.Yaw}";
-                HandPitch.Text = $"Hand pitch: {hand.Direction.Pitch}";
-                HandRoll.Text = $"Hand roll: {hand.PalmNormal.Roll}";
+                HandYaw.Text = $"Hand yaw: {hand.Yaw}";
+                HandPitch.Text = $"Hand pitch: {hand.Pitch}";
+                HandRoll.Text = $"Hand roll: {hand.Roll}";
 
                 FingerSpread.Text = "Finger spread: " + hand.AngleSum;
                 HandOpen.Text = $"Hand open: {hand.IsOpen}";

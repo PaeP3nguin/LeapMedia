@@ -2,10 +2,13 @@
 
 namespace LeapMedia {
     /// <summary>
-    ///     A general-purpose class for detecting hand gestures
+    ///     A general-purpose class for detecting discrete hand gestures
+    ///     A discrete gesture is one where the hand is either making or not making the gesture and an action should be
+    ///     triggered only once when the hand first starts making the gesture
+    ///     An example of a discrete gesture is rotating the hand past a certain angle to change the song
     ///     Handles all the nitty-gritty stuff of debouncing, only triggering once per gesture, etc.
     /// </summary>
-    internal class GestureDetector : IGestureDetector {
+    internal class DiscreteGestureDetector : IGestureDetector {
         private const int MIN_TRIGGER_DEBOUNCE = 500 * 1000;
         private const int MIN_DETECTION_TIME = 100 * 1000;
         private const int MIN_COOLDOWN_TIME = 100 * 1000;
@@ -20,20 +23,15 @@ namespace LeapMedia {
         private int lastTriggerHandId;
 
         /// <summary>
-        ///     Create a gesture detector
+        ///     Create a discrete gesture detector
         /// </summary>
         /// <param name="isGesture">A function that returns true if the gesture is detected</param>
         /// <param name="onGesture">A function to be run when the gesture is triggered</param>
-        public GestureDetector(Func<HandStats, bool> isGesture, Action onGesture) {
+        public DiscreteGestureDetector(Func<HandStats, bool> isGesture, Action onGesture) {
             this.isGesture = isGesture;
             this.onGesture = onGesture;
         }
 
-        /// <summary>
-        ///     Call this function whenever a valid hand is found in a frame that you want to detect gestures on
-        /// </summary>
-        /// <param name="hand">Hand to detect gestures on</param>
-        /// <param name="timestamp">Timestamp of the frame, in microseconds</param>
         public void OnHand(HandStats hand, long timestamp) {
             bool wasMakingGesture = isMakingGesture && lastHandId == hand.Id;
             isMakingGesture = isGesture(hand);
