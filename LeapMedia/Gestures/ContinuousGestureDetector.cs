@@ -15,6 +15,13 @@ namespace LeapMedia.Gestures {
         private readonly float triggerThreshold;
 
         private float lastTriggerValue = float.NaN;
+        private long lastPositiveTriggerTime;
+        private long lastNegativeTriggerTime;
+
+        /// <summary>
+        ///     Amount of time in microseconds to wait between triggering gesture going in different directions
+        /// </summary>
+        public int DirectionDebounceTime { get; set; }
 
         /// <summary>
         ///     Create a continuous gesture detector
@@ -46,9 +53,22 @@ namespace LeapMedia.Gestures {
             float diff = lastTriggerValue - currentValue;
             if (Math.Abs(diff) < triggerThreshold) return;
 
-            lastTriggerValue = currentValue;
+            bool isPositiveChange = diff >= 0;
 
-            onGesture(diff >= 0);
+            if (isPositiveChange) {
+                if (lastNegativeTriggerTime + DirectionDebounceTime >= timestamp) {
+                    return;
+                }
+                lastPositiveTriggerTime = timestamp;
+            } else {
+                if (lastPositiveTriggerTime + DirectionDebounceTime >= timestamp) {
+                    return;
+                }
+                lastNegativeTriggerTime = timestamp;
+            }
+
+            lastTriggerValue = currentValue;
+            onGesture(isPositiveChange);
         }
 
         /// <summary>
@@ -75,7 +95,9 @@ namespace LeapMedia.Gestures {
                     } else {
                         VolumeUtil.VolumeDown();
                     }
-                });
+                }) {
+                DirectionDebounceTime = 500 * 1000
+            };
         }
 
         /// <summary>
