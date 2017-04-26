@@ -76,8 +76,8 @@ namespace LeapMedia.Gestures {
         /// </summary>
         public static ContinuousGestureDetector RotateHandChangeVolumeGesture() {
             return new ContinuousGestureDetector(
-                // Only allow rotation if hand is closed
-                hand => !hand.IsOpen,
+                // Only allow rotation if hand is closed and visible for a bit
+                hand => !hand.IsOpen && hand.TimeVisible >= 500 * 1000,
                 // Track hand roll (angle along Z axis) in radians, from 0 to 2PI
                 delegate(HandStats hand) {
                     if (hand.Roll >= 0) {
