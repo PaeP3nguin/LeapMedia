@@ -15,6 +15,8 @@ namespace LeapMedia {
     ///     Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window {
+        private const float MIN_CONFIDENCE = 0.75f;
+
         private readonly AudioController audioController;
         private readonly List<IGestureDetector> gestureDetectors;
         private readonly Controller leapController;
@@ -32,6 +34,7 @@ namespace LeapMedia {
                 DiscreteGestureDetector.OpenHandToggleMusicGesture(),
                 DiscreteGestureDetector.HandLeftPrevTrackGesture(),
                 DiscreteGestureDetector.HandRightNextTrackGesture(),
+                DiscreteGestureDetector.HandDownMuteMusicGesture(),
                 ContinuousGestureDetector.RotateHandChangeVolumeGesture()
             };
 
@@ -108,6 +111,9 @@ namespace LeapMedia {
                 HandInBounds.Text = $"In bounds: {hand.IsInBounds}";
                 UsingMouse.Text = $"Using mouse: {hand.IsUsingMouse}";
             }
+
+            // Must be CONFIDENT
+            if (hand.Confidence < MIN_CONFIDENCE) return;
 
             // Only use right hand
             if (hand.IsLeft) return;
